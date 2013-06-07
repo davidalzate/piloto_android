@@ -30,13 +30,31 @@
         <ImageView
             style="@style/TitleBarSeparator"
             android:contentDescription="@string/title_separator_desc" />
+
+        <Button
+            android:id="@+id/button1"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+
     </LinearLayout>
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="880dp" />
 
+    <EditText
+        android:id="@+id/jsonText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:text="dddd" >
+
+        <requestFocus />
+    </EditText>
 
 </LinearLayout>
 

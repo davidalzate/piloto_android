@@ -40,10 +40,10 @@
 
     </LinearLayout>
 
-    <ListView
+    <ListView 
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="880dp" />
+        android:layout_height="880dp" ></ListView>
 
     <EditText
         android:id="@+id/jsonText"

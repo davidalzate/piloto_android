@@ -6,7 +6,11 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 
-import co.com.nuevaera.mobil.RestaurantContract.RestaurantEntry;
+import co.com.nuevaera.mobil.model.CategoriaDto;
+import co.com.nuevaera.mobil.model.RestauranteDto;
+import co.com.nuevaera.mobil.model.db.NuevaEraDatabaseHandler;
+import co.com.nuevaera.mobil.model.db.RestaurantContract.Restaurant;
+import co.com.nuevaera.mobil.util.NuevaEraJSonParser;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -92,7 +96,7 @@ public class NEMobilMain extends Activity {
 
 	static final int REQUEST_AUTHORIZATION = 1;
 
-	static final int REQUEST_ACCOUNT_PICKER = 2; 
+	static final int REQUEST_ACCOUNT_PICKER = 2;
 
 	final HttpTransport transport = AndroidHttp.newCompatibleTransport();
 
@@ -116,8 +120,6 @@ public class NEMobilMain extends Activity {
 	private AccountManager accountManager;
 	private DefaultHttpClient httpclient = new DefaultHttpClient();
 
-	
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -137,7 +139,7 @@ public class NEMobilMain extends Activity {
 		service = new com.google.api.services.tasks.Tasks.Builder(transport,
 				jsonFactory, credential).setApplicationName("nuevaeramedellin")
 				.build();
-		
+
 	}
 
 	void showGooglePlayServicesAvailabilityErrorDialog(
@@ -204,7 +206,7 @@ public class NEMobilMain extends Activity {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) { 
+	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.nemobil_main, menu);
 		return super.onCreateOptionsMenu(menu);
@@ -376,14 +378,14 @@ public class NEMobilMain extends Activity {
 
 		protected void onPostExecute(Boolean result) {
 			Log.v(LOG_TAG, "Done cookie");
-			new MyAuthenticatedRequest()
-					.execute("http://nuevaeramedellin.appspot.com/nuevaera/identityresource");
+			new RestaurantSyncRequest()
+					.execute("http://nuevaeramedellin.appspot.com/nuevaera/identityresource?id=86001");
 		}
 	}
 
 	// make your authenticated request here using the same httpclient that
 	// received the cookie
-	private class MyAuthenticatedRequest extends
+	private class RestaurantSyncRequest extends
 			AsyncTask<String, Void, Boolean> {
 
 		private HttpResponse response;
@@ -426,73 +428,72 @@ public class NEMobilMain extends Activity {
 			Toast.makeText(getBaseContext(),
 					"Response from request: " + content, Toast.LENGTH_LONG)
 					.show();
-			
-			try {
-					
-				NuevaeraDbHelper mDbHelper = new NuevaeraDbHelper(getBaseContext());
-				
-				/// Create a new map of values, where column names are the keys
-				ContentValues values = new ContentValues();
-				values.put(RestaurantEntry.COLUMN_NAME_ENTRY_ID, "1");
-				values.put(RestaurantEntry.COLUMN_NAME_NAME, "R1");
-				values.put(RestaurantEntry.COLUMN_NAME_BANNER, "xxxx");
+			CategorySyncRequest categorySyncRequest = new CategorySyncRequest();
+			categorySyncRequest
+					.execute("http://nuevaeramedellin.appspot.com/nuevaera/categoryresource?idRestaurante=86001");
 
-				// Insert the new row, returning the primary key value of the new row
-				SQLiteDatabase db = mDbHelper.getWritableDatabase();
-				long newRowId;
-				newRowId = db.insert(
-						RestaurantEntry.TABLE_NAME,
-						null,
-				         values);
-				Log.v("db", "newRowId===="+newRowId+"----");
-				Toast.makeText(getBaseContext(),"newRowId",Toast.LENGTH_LONG)
-				.show();
-				db.close();
-				
-			} catch (Exception e) {
-				// TODO: handle exception
-				Log.v("db", "No ocurrio ningun error en la creacion de la db");
-			}
-			
-			/*JSONObject jArray = null;
-			ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
-			//try parse the string to a JSON object
-			try{
-		        	jArray = new JSONObject(content);
-		        	JSONArray  earthquakes = jArray.getJSONArray("earthquakes");
+			ArrayList<RestauranteDto> restaurants = NuevaEraJSonParser
+					.getRestaurantsFromJson(content);
 
-	      	       	//Loop the Array
-	        for(int i=0;i < earthquakes.length();i++){						
+			NuevaEraDatabaseHandler databaseHandler = new NuevaEraDatabaseHandler(
+					getBaseContext());
+			databaseHandler.addRestaurantList(restaurants);
 
-	        	HashMap<String, String> map = new HashMap<String, String>();
-	        	JSONObject e = earthquakes.getJSONObject(i);
-
-	        	map.put("id",  String.valueOf(i));
-	        	map.put("name", "Earthquake name:" + e.getString("eqid"));
-	        	map.put("magnitude", "Magnitude: " +  e.getString("magnitude"));
-	        	mylist.add(map);
-		}
-	        ListAdapter adapter = new SimpleAdapter(this, mylist , R.layout.activity_nemobil_main, android.R.layout.activity_list_item, null);
-
-    setListAdapter(adapter);
-
-    final ListView lv = getListView();
-    lv.setTextFilterEnabled(true);
-    lv.setOnItemClickListener(new OnItemClickListener() {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			
-			Toast.makeText(NEMobilMain.this, "ID  was clicked.", Toast.LENGTH_SHORT).show(); 
-
-			
-		}
-	});
-			}catch(JSONException e){
-				Log.e("log_tag", "Error parsing data "+e.toString());
-			}*/
 		}
 	}
+
+	private class CategorySyncRequest extends AsyncTask<String, Void, String> {
+
+		private HttpResponse response;
+		private String content = null;
+
+		protected String doInBackground(String... urls) {
+			String ret = "";
+			try {
+
+				HttpGet httpGet = new HttpGet(urls[0]);
+				response = httpclient.execute(httpGet);
+				StatusLine statusLine = response.getStatusLine();
+				Log.v(LOG_TAG, statusLine.getReasonPhrase());
+				for (Cookie cookie : httpclient.getCookieStore().getCookies()) {
+					Log.v(LOG_TAG, cookie.getName());
+				}
+				if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					response.getEntity().writeTo(out);
+					out.close();
+					ret = out.toString();
+				}
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+				cancel(true);
+			} catch (IOException e) {
+				e.printStackTrace();
+				cancel(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				cancel(true);
+			}
+			return ret;
+		}
+
+		// display the response from the request above
+		protected void onPostExecute(String result) {
+			Log.v(LOG_TAG, result);
+			Toast.makeText(getBaseContext(),
+					"Response from request: " + content, Toast.LENGTH_LONG)
+					.show();
+
+			ArrayList<CategoriaDto> categories = NuevaEraJSonParser
+					.getCategoriesFromJson(result);
+
+			NuevaEraDatabaseHandler databaseHandler = new NuevaEraDatabaseHandler(
+					getBaseContext());
+			databaseHandler.addCategoriesList(categories);
+
+		}
+	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

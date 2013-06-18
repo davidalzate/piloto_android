@@ -20,6 +20,7 @@ public class NuevaeraDbHelper extends SQLiteOpenHelper {
 
 	private static final String TEXT_TYPE = " TEXT";
 	private static final String INT_TYPE = " INTEGER";
+	private static final String REAL_TYPE = " REAL";
 	private static final String COMMA_SEP = ",";
 	private static final String SQL_CREATE_RESTAURANTS = 
 			"CREATE TABLE "
@@ -43,10 +44,15 @@ public class NuevaeraDbHelper extends SQLiteOpenHelper {
 	private static final String SQL_CREATE_ELEMENTS =
 			"CREATE TABLE "
 			+ Element.TABLE_NAME + " (" + Element._ID
-			+ " INTEGER PRIMARY KEY," + Element.COLUMN_NAME_CATEGORY_ID
-			+ INT_TYPE + COMMA_SEP + Category.COLUMN_NAME_NAME
-			+ TEXT_TYPE + COMMA_SEP + Category.COLUMN_NAME_RESTAURANT_ID
-			+ TEXT_TYPE + COMMA_SEP + Category.COLUMN_NAME_FOTO
+			+ " INTEGER PRIMARY KEY," + Element.COLUMN_NAME_ELEMENT_ID
+			+ INT_TYPE + COMMA_SEP + Element.COLUMN_NAME_CATEGORY_ID
+			+ INT_TYPE + COMMA_SEP + Element.COLUMN_NAME_NAME
+			+ TEXT_TYPE + COMMA_SEP + Element.COLUMN_NAME_DESLARGA
+			+ TEXT_TYPE + COMMA_SEP + Element.COLUMN_NAME_DESCORTA
+			+ INT_TYPE + COMMA_SEP + Element.COLUMN_NAME_DISPONIBLE
+			+ TEXT_TYPE + COMMA_SEP + Element.COLUMN_NAME_FOTOBIG
+			+ TEXT_TYPE + COMMA_SEP + Element.COLUMN_NAME_FOTOSMALL
+			+ REAL_TYPE + COMMA_SEP + Element.COLUMN_NAME_PRECIO
 			+ TEXT_TYPE + " ); " +
 			"";
 
@@ -63,6 +69,7 @@ public class NuevaeraDbHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(SQL_CREATE_RESTAURANTS);
 		db.execSQL(SQL_CREATE_CATEGORIES);
+		db.execSQL(SQL_CREATE_ELEMENTS);
 		Log.v("db", "NuevaEra database was created");
 	}
 	@Override

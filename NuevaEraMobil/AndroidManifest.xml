@@ -29,7 +29,12 @@
         </activity>
         <activity
             android:name="co.com.nuevaera.mobil.RestaurantActivity"
-            android:label="@string/title_activity_restaurant" >
+            android:label="@string/title_activity_restaurant"
+            android:parentActivityName="co.com.nuevaera.mobil.NEMobilMain"
+             >
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="co.com.nuevaera.mobil.NEMobilMain" />
         </activity>
     </application>
 

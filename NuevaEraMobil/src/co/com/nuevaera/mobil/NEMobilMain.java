@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 
 import co.com.nuevaera.mobil.model.CategoriaDto;
+import co.com.nuevaera.mobil.model.ElementoDto;
 import co.com.nuevaera.mobil.model.RestauranteDto;
 import co.com.nuevaera.mobil.model.db.NuevaEraDatabaseHandler;
 import co.com.nuevaera.mobil.model.db.RestaurantContract.Restaurant;
@@ -224,7 +225,6 @@ public class NEMobilMain extends Activity {
 			 * accountManager.getAuthToken(account, "ah", false, new
 			 * GetAuthTokenCallback(this), null);
 			 */
-			EditText et = (EditText) findViewById(R.id.jsonText);
 			Account account = credential.getSelectedAccount();
 			AccountManager accountManager = AccountManager
 					.get(getApplicationContext());
@@ -379,7 +379,7 @@ public class NEMobilMain extends Activity {
 		protected void onPostExecute(Boolean result) {
 			Log.v(LOG_TAG, "Done cookie");
 			new RestaurantSyncRequest()
-					.execute("http://nuevaeramedellin.appspot.com/nuevaera/identityresource?id=86001");
+					.execute("http://nuevaeramedellin.appspot.com/nuevaera/identityresource");
 		}
 	}
 
@@ -425,12 +425,10 @@ public class NEMobilMain extends Activity {
 		// display the response from the request above
 		protected void onPostExecute(Boolean result) {
 			Log.v(LOG_TAG, content);
-			Toast.makeText(getBaseContext(),
-					"Response from request: " + content, Toast.LENGTH_LONG)
-					.show();
+
 			CategorySyncRequest categorySyncRequest = new CategorySyncRequest();
 			categorySyncRequest
-					.execute("http://nuevaeramedellin.appspot.com/nuevaera/categoryresource?idRestaurante=86001");
+					.execute("http://nuevaeramedellin.appspot.com/nuevaera/categoryresource");
 
 			ArrayList<RestauranteDto> restaurants = NuevaEraJSonParser
 					.getRestaurantsFromJson(content);
@@ -480,10 +478,12 @@ public class NEMobilMain extends Activity {
 		// display the response from the request above
 		protected void onPostExecute(String result) {
 			Log.v(LOG_TAG, result);
-			Toast.makeText(getBaseContext(),
-					"Response from request: " + content, Toast.LENGTH_LONG)
-					.show();
+	
 
+			ElementSyncRequest elementSyncRequest = new ElementSyncRequest();
+			elementSyncRequest
+					.execute("http://nuevaeramedellin.appspot.com/nuevaera/elementresource");
+			
 			ArrayList<CategoriaDto> categories = NuevaEraJSonParser
 					.getCategoriesFromJson(result);
 
@@ -493,9 +493,62 @@ public class NEMobilMain extends Activity {
 
 		}
 	}
+	
+	private class ElementSyncRequest extends AsyncTask<String, Void, String> {
+
+		private HttpResponse response;
+		private String content = null;
+
+		protected String doInBackground(String... urls) {
+			String ret = "";
+			try {
+
+				HttpGet httpGet = new HttpGet(urls[0]);
+				response = httpclient.execute(httpGet);
+				StatusLine statusLine = response.getStatusLine();
+				Log.v(LOG_TAG, statusLine.getReasonPhrase());
+				for (Cookie cookie : httpclient.getCookieStore().getCookies()) {
+					Log.v(LOG_TAG, cookie.getName());
+				}
+				if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					response.getEntity().writeTo(out);
+					out.close();
+					ret = out.toString();
+				}
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+				cancel(true);
+			} catch (IOException e) {
+				e.printStackTrace();
+				cancel(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				cancel(true);
+			}
+			return ret;
+		}
+
+		// display the response from the request above
+		protected void onPostExecute(String result) {
+			Log.v(LOG_TAG, result);
+
+			ArrayList<ElementoDto> elements = NuevaEraJSonParser
+					.getElementsFromJson(result);
+
+			NuevaEraDatabaseHandler databaseHandler = new NuevaEraDatabaseHandler(
+					getBaseContext());
+			databaseHandler.addElementsList(elements);
+			
+			Intent intent = new Intent(NEMobilMain.this, RestaurantActivity.class);
+
+		    startActivity(intent);
+		}
+	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		Log.v(LOG_TAG, "DSTR");
 	}
 }

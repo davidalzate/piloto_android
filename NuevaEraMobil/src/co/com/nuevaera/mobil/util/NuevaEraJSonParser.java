@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.com.nuevaera.mobil.model.CategoriaDto;
+import co.com.nuevaera.mobil.model.ElementoDto;
 import co.com.nuevaera.mobil.model.RestauranteDto;
 
 import com.google.gson.Gson;
@@ -19,5 +20,10 @@ public class NuevaEraJSonParser {
 	public static ArrayList<CategoriaDto> getCategoriesFromJson(String json) {
 		Gson gson = new Gson();
 		return gson.fromJson(json, new TypeToken<List<CategoriaDto>>(){}.getType());
+	}
+	
+	public static ArrayList<ElementoDto> getElementsFromJson(String json) {
+		Gson gson = new Gson();
+		return gson.fromJson(json, new TypeToken<List<ElementoDto>>(){}.getType());
 	}
 }

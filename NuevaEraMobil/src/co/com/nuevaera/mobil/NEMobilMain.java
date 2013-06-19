@@ -545,6 +545,7 @@ public class NEMobilMain extends Activity {
 		    startActivity(intent);
 		}
 	}
+	
 
 	@Override
 	protected void onDestroy() {

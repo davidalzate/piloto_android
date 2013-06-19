@@ -173,6 +173,9 @@ public class NuevaEraDatabaseHandler {
 	        } while (cursor.moveToNext());
 	    }
 		
+		cursor.close();
+		db.close();
+		
 		return categoriasList;
 	}
 	

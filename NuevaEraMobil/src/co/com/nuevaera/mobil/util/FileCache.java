@@ -2,6 +2,7 @@ package co.com.nuevaera.mobil.util;
 
 import java.io.File;
 import android.content.Context;
+import android.util.Log;
   
 public class FileCache {
   
@@ -28,10 +29,14 @@ public class FileCache {
   
     public void clear(){
         File[] files=cacheDir.listFiles();
+        Log.v("FileCache", "Files " + files.length);
         if(files==null)
             return;
-        for(File f:files)
-            f.delete();
+        for(File f:files){
+        	Log.v("FileCache", "Deleting... " + f.getAbsolutePath() + "- " +f.getName());
+        	f.delete();
+        }
+            
     }
   
 }

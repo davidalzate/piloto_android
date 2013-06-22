@@ -179,6 +179,49 @@ public class NuevaEraDatabaseHandler {
 		return categoriasList;
 	}
 	
+	
+	public int deleteRestaurant(){
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		// Define 'where' part of query.
+		String selection = Restaurant.COLUMN_NAME_RESTAURANT_ID + " > ?";
+		// Specify arguments in placeholder order.
+		String[] selectionArgs = { "1" };
+		// Issue SQL statement.
+		int count = db.delete(Restaurant.TABLE_NAME, null, null);
+		db.close();
+		return count;
+	}
+	
+	public int deleteCategories(){
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		// Define 'where' part of query.
+		String selection = Category.COLUMN_NAME_RESTAURANT_ID + " > ?";
+		// Specify arguments in placeholder order.
+		String[] selectionArgs = { "1" };
+		// Issue SQL statement.
+		int count = db.delete(Category.TABLE_NAME, null, null);
+		db.close();
+		return count;
+	}
+	
+	public int deleteElements(){
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		// Define 'where' part of query.
+		String selection = Element.COLUMN_NAME_CATEGORY_ID + " > ?";
+		// Specify arguments in placeholder order.
+		String[] selectionArgs = { "1" };
+		// Issue SQL statement.
+		int count = db.delete(Element.TABLE_NAME, null, null);
+		db.close();
+		return count;
+	}
+	
+	public void deleteAllRecords(){
+		deleteRestaurant();
+		deleteCategories();
+		deleteElements();
+	}
+	
 	public void createDb(){
 		
 	}

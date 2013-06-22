@@ -11,6 +11,7 @@ import co.com.nuevaera.mobil.model.ElementoDto;
 import co.com.nuevaera.mobil.model.RestauranteDto;
 import co.com.nuevaera.mobil.model.db.NuevaEraDatabaseHandler;
 import co.com.nuevaera.mobil.model.db.RestaurantContract.Restaurant;
+import co.com.nuevaera.mobil.util.FileCache;
 import co.com.nuevaera.mobil.util.NuevaEraJSonParser;
 
 import com.google.android.gms.auth.GoogleAuthException;
@@ -160,6 +161,21 @@ public class NEMobilMain extends Activity {
 				android.R.layout.simple_list_item_1, tasksList);
 		listView.setAdapter(adapter);
 	}
+	
+	public void bclick(View v){
+	    final int id = v.getId();
+	    switch (id) {
+	    case R.id.button1:
+			FileCache fileCache = new FileCache(this.getBaseContext());
+			fileCache.clear();
+			NuevaEraDatabaseHandler databaseHandler = new NuevaEraDatabaseHandler(
+					getBaseContext());
+			databaseHandler.deleteAllRecords();
+	        break;
+	    // even more buttons here
+	    }
+
+	}
 
 	@Override
 	protected void onResume() {
@@ -236,6 +252,11 @@ public class NEMobilMain extends Activity {
 
 			// et.setText("credential="+credential.getToken());
 
+			break;
+		case R.id.menu_restaurants:
+			Intent intent = new Intent(NEMobilMain.this, RestaurantActivity.class);
+
+		    startActivity(intent);
 			break;
 		case R.id.menu_accounts:
 			chooseAccount();

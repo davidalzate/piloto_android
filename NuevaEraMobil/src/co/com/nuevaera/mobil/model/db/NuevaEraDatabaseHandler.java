@@ -179,6 +179,58 @@ public class NuevaEraDatabaseHandler {
 		return categoriasList;
 	}
 	
+	public ArrayList<ElementoDto> getElements(long idCategory){
+		ArrayList<ElementoDto> elementList = new ArrayList<ElementoDto>();
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+		// Define a projection that specifies which columns from the database
+		// you will actually use after this query.
+		String[] projection = {
+		    Element._ID,
+		    Element.COLUMN_NAME_ELEMENT_ID,
+		    Element.COLUMN_NAME_CATEGORY_ID,
+		    Element.COLUMN_NAME_DESCORTA,
+		    Element.COLUMN_NAME_DESLARGA,
+		    Element.COLUMN_NAME_FOTOBIG,
+		    Element.COLUMN_NAME_FOTOSMALL,
+		    Element.COLUMN_NAME_NAME,
+		    Element.COLUMN_NAME_PRECIO
+		    };
+		String selection = Element.COLUMN_NAME_CATEGORY_ID + " = ?";
+		// Specify arguments in placeholder order.
+		String[] selectionArgs = { Long.toString(idCategory) };
+
+
+		Cursor cursor = db.query(
+				Element.TABLE_NAME,  // The table to query
+		    projection,                               // The columns to return
+		    selection,                                // The columns for the WHERE clause
+		    selectionArgs,                            // The values for the WHERE clause
+		    null,                                     // don't group the rows
+		    null,                                     // don't filter by row groups
+		    null                                 // The sort order
+		    );		
+		
+		if (cursor.moveToFirst()) {
+	        do {
+	        	ElementoDto elemento = new ElementoDto();
+	        	elemento.setIdElemento(cursor.getLong(1));
+	        	elemento.setIdCategoria(cursor.getLong(2));
+	        	elemento.setDescripcionCorta(cursor.getString(3));
+	        	elemento.setDescripcionLarga(cursor.getString(4));
+	        	elemento.setFotoBig(cursor.getString(5));
+	        	elemento.setFotoSmall(cursor.getString(6));
+	        	elemento.setNombre(cursor.getString(7));
+	        	elemento.setPrecio(cursor.getString(8));
+	            elementList.add(elemento);
+	        } while (cursor.moveToNext());
+	    }
+		
+		cursor.close();
+		db.close();
+		
+		return elementList;
+	}
 	
 	public int deleteRestaurant(){
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();

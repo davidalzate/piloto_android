@@ -12,13 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-public class MobileArrayAdapter extends ArrayAdapter<CategoriaDto> {
+public class CategoryArrayAdapter extends ArrayAdapter<CategoriaDto> {
 	private final Context context;
 	private final ArrayList<CategoriaDto> values;
 	public ImageLoader imageLoader; 
  
-	public MobileArrayAdapter(Context context, ArrayList<CategoriaDto> values) {
+	public CategoryArrayAdapter(Context context, ArrayList<CategoriaDto> values) {
 		super(context, R.layout.activity_restaurant, values);
 		this.context = context;
 		this.values = values;
@@ -29,14 +30,21 @@ public class MobileArrayAdapter extends ArrayAdapter<CategoriaDto> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = (LayoutInflater) context
 			.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
- 
+		
+		
+		
 		View rowView = inflater.inflate(R.layout.activity_restaurant, parent, false);
 		
-		ImageView imageView = (ImageView) rowView.findViewById(R.id.banner);
+		TextView categoryView = (TextView) rowView.findViewById(R.id.category);
+		
+		ImageView imageView = (ImageView) rowView.findViewById(R.id.categoryImage);
+
 		
 		int stub_id = R.drawable.ic_launcher;
 		
 		imageLoader.DisplayImage(values.get(position).getFoto(), stub_id, imageView);
+		
+		categoryView.setText(values.get(position).getNombre());
  
 		// Change icon based on name
 		//String s = values[position];

@@ -11,11 +11,23 @@
     tools:context=".RestaurantActivity" >
 
     <ImageView
-        android:id="@+id/banner"
-        android:layout_width="wrap_content"
+        android:id="@+id/categoryImage"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/banner"
-        android:contentDescription="@string/hello_world"
-         />
+        android:contentDescription="@string/category_name"
+        android:scaleType="fitXY"
+        android:src="@drawable/category_banner" />
+
+    <TextView
+        android:id="@+id/category"
+        style="@style/SessionTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:lines="1"
+        android:maxLines="1"
+        android:text="@string/category_name"
+        android:textStyle="bold"
+        android:typeface="normal" />
 
 </LinearLayout>

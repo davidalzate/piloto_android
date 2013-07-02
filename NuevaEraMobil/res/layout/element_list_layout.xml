@@ -2,21 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:descendantFocusability="blocksDescendants" >
 
     <ImageView
         android:id="@+id/elementImage"
-        android:layout_width="wrap_content"
+        android:layout_width="0dip"
         android:layout_height="fill_parent"
-        android:layout_weight="0.3"
-        android:src="@drawable/element_banner" 
-        android:contentDescription="@string/category_name"/>
+        android:layout_weight="0.5"
+        android:contentDescription="@string/category_name"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:longClickable="false"
+        android:scaleType="centerCrop"
+        android:src="@drawable/element_banner" />
 
-    <WebView
+    <TextView
         android:id="@+id/elementDescription"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="fill_parent"
-        
-        android:layout_weight="0.7" />
+        android:layout_weight="0.5"
+        android:clickable="false"
+        android:descendantFocusability="blocksDescendants"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:longClickable="false" />
 
 </LinearLayout>

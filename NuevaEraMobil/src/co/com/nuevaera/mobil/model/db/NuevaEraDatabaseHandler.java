@@ -282,4 +282,56 @@ public class NuevaEraDatabaseHandler {
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
 	}
+	
+	public ElementoDto getElement(long idElement){
+		ElementoDto elemento = null;
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+		// Define a projection that specifies which columns from the database
+		// you will actually use after this query.
+		String[] projection = {
+		    Element._ID,
+		    Element.COLUMN_NAME_ELEMENT_ID,
+		    Element.COLUMN_NAME_CATEGORY_ID,
+		    Element.COLUMN_NAME_DESCORTA,
+		    Element.COLUMN_NAME_DESLARGA,
+		    Element.COLUMN_NAME_FOTOBIG,
+		    Element.COLUMN_NAME_FOTOSMALL,
+		    Element.COLUMN_NAME_NAME,
+		    Element.COLUMN_NAME_PRECIO
+		    };
+		String selection = Element.COLUMN_NAME_ELEMENT_ID + " = ?";
+		// Specify arguments in placeholder order.
+		String[] selectionArgs = { Long.toString(idElement) };
+
+
+		Cursor cursor = db.query(
+				Element.TABLE_NAME,  // The table to query
+		    projection,                               // The columns to return
+		    selection,                                // The columns for the WHERE clause
+		    selectionArgs,                            // The values for the WHERE clause
+		    null,                                     // don't group the rows
+		    null,                                     // don't filter by row groups
+		    null                                 // The sort order
+		    );		
+		
+		if (cursor.moveToFirst()) {
+	       
+	        	elemento = new ElementoDto();
+	        	elemento.setIdElemento(cursor.getLong(1));
+	        	elemento.setIdCategoria(cursor.getLong(2));
+	        	elemento.setDescripcionCorta(cursor.getString(3));
+	        	elemento.setDescripcionLarga(cursor.getString(4));
+	        	elemento.setFotoBig(cursor.getString(5));
+	        	elemento.setFotoSmall(cursor.getString(6));
+	        	elemento.setNombre(cursor.getString(7));
+	        	elemento.setPrecio(cursor.getString(8));
+
+	    }
+		
+		cursor.close();
+		db.close();
+		
+		return elemento;
+	}
 }

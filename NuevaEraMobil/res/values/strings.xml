@@ -10,11 +10,12 @@
     <string name="refresh">Refresh</string>
     <string name="error">Error</string>
     <string name="error_format">[Error] %s</string>
-    <string name="title_activity_restaurant">Restaurant Activity</string>
+    <string name="title_activity_restaurant">Menú</string>
     <string name="restaurant">Restaurant</string>
     <string name="category_name">Category</string>
     <string name="title_activity_elements">Elements Activity</string>
     <string name="element_name">Element</string>
     <string name="element_description">Element description</string>
+    <string name="title_activity_info_element">InfoElement</string>
 
 </resources>

@@ -5,16 +5,12 @@
     tools:context=".ListViewActivity"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textView1"
-        style="@style/TextHeader"
+    <ImageView
+        android:id="@+id/imageView1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="right|center_vertical"
-        android:text="@string/element_name"
-        android:textSize="@dimen/text_size_medium" />
-
-
+        android:layout_height="142dp"
+        android:contentDescription="@string/element_name"
+        android:src="@drawable/banner" />
 
   <!--  <LinearLayout
         android:id="@+id/elementList"
@@ -55,12 +51,22 @@
 
 -->
 
+    <TextView
+        android:id="@+id/textView1"
+        style="@style/TextHeader"
+        android:layout_width="fill_parent"
+        android:layout_height="6dp"
+        android:background="#000000"
+        android:gravity="right|center_vertical"
+        android:text="@string/element_name"
+        android:textSize="@dimen/text_size_medium" />
+
     <ListView
         android:id="@+id/elementList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/element_list_layout"
-         >
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        tools:listitem="@layout/element_list_layout" >
+
     </ListView>
 
 </LinearLayout>

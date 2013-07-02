@@ -14,6 +14,7 @@ import android.widget.Toast;
 public class RestaurantActivity extends ListActivity {
 	 
 	public final static String EXTRA_MESSAGE = "co.com.nuevaera.mobil.model.MESSAGE";
+	public final static String EXTRA_MESSAGE2 = "co.com.nuevaera.mobil.model.MESSAGE2";
 	 
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class RestaurantActivity extends ListActivity {
 			
 			Intent intent = new Intent(RestaurantActivity.this, ElementsActivity.class);
 		    intent.putExtra(EXTRA_MESSAGE, Long.toString(categoryId));
+		    intent.putExtra(EXTRA_MESSAGE2, categoriaDto.getNombre());
 
 		    startActivity(intent);
 	 

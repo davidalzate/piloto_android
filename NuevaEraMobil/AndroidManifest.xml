@@ -40,6 +40,10 @@
             android:name="co.com.nuevaera.mobil.ElementsActivity"
             android:label="@string/title_activity_elements" >
         </activity>
+        <activity
+            android:name="co.com.nuevaera.mobil.InfoElement"
+            android:label="@string/title_activity_info_element" >
+        </activity>
     </application>
 
 </manifest>

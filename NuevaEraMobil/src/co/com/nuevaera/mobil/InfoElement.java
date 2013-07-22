@@ -28,18 +28,22 @@ public class InfoElement extends Activity {
 		ImageView imageElement =  (ImageView)findViewById(R.id.imageElement);
 		WebView infoElement =  (WebView)findViewById(R.id.infoElement);
 		
+
+		//WebView imgElement =  (WebView)findViewById(R.id.infoElement);
+		
 		int stub_id = R.drawable.ic_launcher;
 		
 		ImageLoader imageLoader=new ImageLoader(this);
-		imageLoader.DisplayImage(elementoDto.getFotoBig(), stub_id, imageElement);
+		System.out.println("djdjdjdjdjdj = " + imageLoader.getFilePath(elementoDto.getFotoBig()+"=s380"));
 		
-
+		imageLoader.DisplayImage(elementoDto.getFotoBig()+"=s600", stub_id, imageElement);
 		
-		
+		//imgElement.loadUrl(elementoDto.getFotoBig());
 		
 		String summary = "<html><body><b><h1>"+elementoDto.getNombre()+"</h1></b><br><h2>"+elementoDto.getDescripcionLarga()+"</h2><br><b>"+elementoDto.getPrecio()+"</b></body></html>";
 		
 		infoElement.loadData(summary, "text/html", null);
+		
 		
 	}
 

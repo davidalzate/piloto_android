@@ -30,18 +30,22 @@ import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -122,9 +126,16 @@ public class NEMobilMain extends Activity {
 	private AccountManager accountManager;
 	private DefaultHttpClient httpclient = new DefaultHttpClient();
 
+	private Dialog myDialog;
+
+	private int itemSelected;
+
+	private boolean authenticated;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		myDialog = createDialog();
 		// enable logging
 		Logger.getLogger("com.google.api.client").setLevel(LOGGING_LEVEL);
 		// view and menu
@@ -161,21 +172,21 @@ public class NEMobilMain extends Activity {
 				android.R.layout.simple_list_item_1, tasksList);
 		listView.setAdapter(adapter);
 	}
-	
-	public void bclick(View v){
-	    final int id = v.getId();
-	    switch (id) {
-	    case R.id.button1:
+
+	/*public void bclick(View v) {
+		final int id = v.getId();
+		switch (id) {
+		case R.id.button1:
 			FileCache fileCache = new FileCache(this.getBaseContext());
 			fileCache.clear();
 			NuevaEraDatabaseHandler databaseHandler = new NuevaEraDatabaseHandler(
 					getBaseContext());
 			databaseHandler.deleteAllRecords();
-	        break;
-	    // even more buttons here
-	    }
+			break;
+		// even more buttons here
+		}
 
-	}
+	}*/
 
 	@Override
 	protected void onResume() {
@@ -231,36 +242,15 @@ public class NEMobilMain extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menu_refresh:
-			AsyncLoadTasks.run(this);
-			/*
-			 * Intent data = getIntent(); AccountManager accountManager =
-			 * AccountManager.get(getApplicationContext()); Account account =
-			 * (Account)data.getExtras().get("account");
-			 * accountManager.getAuthToken(account, "ah", false, new
-			 * GetAuthTokenCallback(this), null);
-			 */
-			Account account = credential.getSelectedAccount();
-			AccountManager accountManager = AccountManager
-					.get(getApplicationContext());
-			// accountManager.getAuthToken(account, "ah", false, new
-			// GetAuthTokenCallback(this), null);
-			expireToken = false;
-			accountManager.getAuthToken(account, "ah", null, false,
-					new OnTokenAcquired(), null);
-
-			// et.setText("credential="+credential.getToken());
-
-			break;
-		case R.id.menu_restaurants:
-			Intent intent = new Intent(NEMobilMain.this, RestaurantActivity.class);
-
-		    startActivity(intent);
-			break;
-		case R.id.menu_accounts:
-			chooseAccount();
-			return true;
+		itemSelected = item.getItemId();
+		authenticated = false;
+		if(itemSelected==R.id.menu_restaurants){
+			Intent intent = new Intent(
+					NEMobilMain.this,
+					RestaurantActivity.class);
+			startActivity(intent);
+		}else{
+			myDialog.show();
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -499,12 +489,11 @@ public class NEMobilMain extends Activity {
 		// display the response from the request above
 		protected void onPostExecute(String result) {
 			Log.v(LOG_TAG, result);
-	
 
 			ElementSyncRequest elementSyncRequest = new ElementSyncRequest();
 			elementSyncRequest
 					.execute("http://nuevaeramedellin.appspot.com/nuevaera/elementresource");
-			
+
 			ArrayList<CategoriaDto> categories = NuevaEraJSonParser
 					.getCategoriesFromJson(result);
 
@@ -514,7 +503,7 @@ public class NEMobilMain extends Activity {
 
 		}
 	}
-	
+
 	private class ElementSyncRequest extends AsyncTask<String, Void, String> {
 
 		private HttpResponse response;
@@ -560,17 +549,119 @@ public class NEMobilMain extends Activity {
 			NuevaEraDatabaseHandler databaseHandler = new NuevaEraDatabaseHandler(
 					getBaseContext());
 			databaseHandler.addElementsList(elements);
-			
-			Intent intent = new Intent(NEMobilMain.this, RestaurantActivity.class);
 
-		    startActivity(intent);
+			Intent intent = new Intent(NEMobilMain.this,
+					RestaurantActivity.class);
+
+			startActivity(intent);
 		}
 	}
-	
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		Log.v(LOG_TAG, "DSTR");
 	}
+
+	private Dialog createDialog() {
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		// Get the layout inflater
+		LayoutInflater inflater = getLayoutInflater();
+
+		// Inflate and set the layout for the dialog
+		// Pass null as the parent view because its going in the dialog layout
+		builder.setView(inflater.inflate(R.layout.dialog_signin_layout, null))
+				// Add action buttons
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+						
+							EditText userName = (EditText) myDialog.findViewById(R.id.username);
+							EditText password = (EditText) myDialog.findViewById(R.id.password);
+							if (null != userName && null != password) {
+								//if (userName.getEditableText().toString().equalsIgnoreCase("nuevaera")
+								//		&& password.getEditableText().toString().equalsIgnoreCase("nu3v43r4")) {
+									
+									userName.setText("");
+									password.setText("");
+									
+									switch (itemSelected) {
+									case R.id.menu_refresh:
+										
+										FileCache fileCache = new FileCache(NEMobilMain.this.getBaseContext());
+										fileCache.clear();
+										NuevaEraDatabaseHandler databaseHandler = new NuevaEraDatabaseHandler(
+												getBaseContext());
+										databaseHandler.deleteAllRecords();
+										
+										AsyncLoadTasks.run(NEMobilMain.this);
+										/*
+										 * Intent data = getIntent(); AccountManager
+										 * accountManager =
+										 * AccountManager.get(getApplicationContext
+										 * ()); Account account =
+										 * (Account)data.getExtras().get("account");
+										 * accountManager.getAuthToken(account,
+										 * "ah", false, new
+										 * GetAuthTokenCallback(this), null);
+										 */
+										Account account = credential
+												.getSelectedAccount();
+										AccountManager accountManager = AccountManager
+												.get(getApplicationContext());
+										// accountManager.getAuthToken(account,
+										// "ah", false, new
+										// GetAuthTokenCallback(this), null);
+										expireToken = false;
+										accountManager.getAuthToken(account, "ah",
+												null, false, new OnTokenAcquired(),
+												null);
+	
+										// et.setText("credential="+credential.getToken());
+	
+										break;
+									/*case R.id.menu_restaurants:
+										Intent intent = new Intent(
+												NEMobilMain.this,
+												RestaurantActivity.class);
+	
+										startActivity(intent);
+										break;*/
+									case R.id.menu_accounts:
+										chooseAccount();
+									default:
+	
+									}
+									
+								//}else{
+									Toast.makeText(NEMobilMain.this, "Usuario o clave invalidos", 20000);
+								//}
+							}else{
+								Toast.makeText(NEMobilMain.this, "Por favor ingrese el usuario y la clave", 20000);
+							}
+						}
+					
+				})
+				.setNegativeButton("Cancel",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
+		return builder.create();
+	}
+	@Override
+	public void onBackPressed() {
+
+	}
+	@Override
+	public void onAttachedToWindow() {
+		//getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+		super.onAttachedToWindow();
+	}
+
 }

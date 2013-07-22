@@ -20,7 +20,7 @@ public class CategoryArrayAdapter extends ArrayAdapter<CategoriaDto> {
 	public ImageLoader imageLoader; 
  
 	public CategoryArrayAdapter(Context context, ArrayList<CategoriaDto> values) {
-		super(context, R.layout.activity_restaurant, values);
+		super(context, R.layout.category_list_layout, values);
 		this.context = context;
 		this.values = values;
 		imageLoader=new ImageLoader(context);
@@ -33,7 +33,7 @@ public class CategoryArrayAdapter extends ArrayAdapter<CategoriaDto> {
 		
 		
 		
-		View rowView = inflater.inflate(R.layout.activity_restaurant, parent, false);
+		View rowView = inflater.inflate(R.layout.category_list_layout, parent, false);
 		
 		TextView categoryView = (TextView) rowView.findViewById(R.id.category);
 		

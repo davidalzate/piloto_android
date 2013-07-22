@@ -8,7 +8,8 @@
         android:layout_width="fill_parent"
         android:layout_height="142dp"
         android:contentDescription="@string/element_name"
-        android:src="@drawable/banner" />
+        android:scaleType="fitXY"
+        android:src="@drawable/descarga" />
 
     <TextView
         android:id="@+id/textView1"
@@ -22,10 +23,14 @@
 
     <ImageView
         android:id="@+id/imageElement"
-        android:layout_width="fill_parent"
-        android:layout_height="500dp"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_margin="40dp"
+        android:adjustViewBounds="true"
+        android:baselineAlignBottom="true"
         android:contentDescription="@string/title_activity_elements"
-        android:scaleType="fitXY"
+        android:cropToPadding="true"
+        android:scaleType="fitStart"
         android:src="@drawable/element_image" />
 
     <TextView

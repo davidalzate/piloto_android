@@ -42,7 +42,7 @@ public class ElementArrayAdapter extends ArrayAdapter<ElementoDto> {
 		
 		int stub_id = R.drawable.ic_launcher;
 		
-		imageLoader.DisplayImage(values.get(position).getFotoBig(), stub_id, imageView);
+		imageLoader.DisplayImage(values.get(position).getFotoSmall(), stub_id, imageView);
 		ElementoDto elementoDto = values.get(position);
 		String summary = "<html><body><br>"+elementoDto.getNombre()+"<b><h1><br>"+elementoDto.getDescripcionCorta()+"</br></h1>"+elementoDto.getPrecio()+"</p></body></html>";
 		categoryView.setText(Html.fromHtml(summary));

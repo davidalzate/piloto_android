@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -95,7 +96,7 @@ public class ImageLoader {
             BitmapFactory.decodeStream(new FileInputStream(f),null,o);
   
             //Find the correct scale value. It should be the power of 2.
-            final int REQUIRED_SIZE=70;
+            final int REQUIRED_SIZE=100;
             int width_tmp=o.outWidth, height_tmp=o.outHeight;
             int scale=1;
             while(true){
@@ -174,4 +175,20 @@ public class ImageLoader {
         fileCache.clear();
     }
   
+    public String getFilePath(String url){
+    	String path=null;
+    	File tmpFile = fileCache.getFile(url);
+    	if(null!=fileCache){
+    		if(null!=tmpFile){
+    			path = tmpFile.getAbsolutePath();
+    			try {
+					System.out.println(tmpFile.getCanonicalPath() + " xxxx " + tmpFile.getName());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    	}
+    	return path;
+    }
 }

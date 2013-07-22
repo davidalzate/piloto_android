@@ -17,5 +17,6 @@
     <string name="element_name">Element</string>
     <string name="element_description">Element description</string>
     <string name="title_activity_info_element">InfoElement</string>
-
+	<string name="username">Usuario</string>
+	<string name="password">Clave</string>
 </resources>

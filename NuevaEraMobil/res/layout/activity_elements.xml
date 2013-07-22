@@ -10,46 +10,8 @@
         android:layout_width="fill_parent"
         android:layout_height="142dp"
         android:contentDescription="@string/element_name"
-        android:src="@drawable/banner" />
-
-  <!--  <LinearLayout
-        android:id="@+id/elementList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:alignmentMode="alignBounds"
-            android:columnCount="2"
-            android:rowCount="1" >
-
-            <TextView
-                android:id="@+id/elementDescription"
-                android:layout_width="wrap_content"
-                android:layout_column="0"
-                android:layout_gravity="right|center_vertical"
-                android:layout_row="0"
-                android:contentDescription="@string/element_description"
-                android:text="@string/element_description" />
-
-            <ImageView
-                android:id="@+id/elementTopBanner"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_gravity="left|top"
-                android:layout_row="0"
-                android:contentDescription="@string/category_name"
-                android:src="@drawable/category_banner" />
-
-        </GridLayout>
-         
-
-    </LinearLayout>
-
--->
+        android:scaleType="fitXY"
+        android:src="@drawable/descarga" />
 
     <TextView
         android:id="@+id/textView1"

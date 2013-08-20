@@ -34,4 +34,13 @@ public class RestaurantContract {
         public static final String COLUMN_NAME_NAME = "nombre";
         public static final String COLUMN_NAME_PRECIO = "precio";
     }
+	
+	public static abstract class Anuncio implements BaseColumns {
+        public static final String TABLE_NAME = "anuncio";
+        public static final String COLUMN_NAME_ANUNCIO_ID  = "anuncioid";
+        public static final String COLUMN_NAME_EMPRESA_ID  = "empresaid";
+        public static final String COLUMN_NAME_FOTOBIG = "fotoBig";
+        public static final String COLUMN_NAME_FOTOSMALL = "fotoSmall";
+        public static final String COLUMN_NAME_DURACION = "duracion";
+    }
 }

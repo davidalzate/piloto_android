@@ -1,5 +1,6 @@
 package co.com.nuevaera.mobil.model.db;
 
+import co.com.nuevaera.mobil.model.db.RestaurantContract.Anuncio;
 import co.com.nuevaera.mobil.model.db.RestaurantContract.Category;
 import co.com.nuevaera.mobil.model.db.RestaurantContract.Element;
 import co.com.nuevaera.mobil.model.db.RestaurantContract.Restaurant;
@@ -55,6 +56,17 @@ public class NuevaeraDbHelper extends SQLiteOpenHelper {
 			+ REAL_TYPE + COMMA_SEP + Element.COLUMN_NAME_PRECIO
 			+ TEXT_TYPE + " ); " +
 			"";
+	
+	private static final String SQL_CREATE_ANUNCIOS =
+			"CREATE TABLE "
+			+ Anuncio.TABLE_NAME + " (" + Anuncio._ID
+			+ " INTEGER PRIMARY KEY," + Anuncio.COLUMN_NAME_ANUNCIO_ID
+			+ INT_TYPE + COMMA_SEP + Anuncio.COLUMN_NAME_EMPRESA_ID
+			+ INT_TYPE + COMMA_SEP + Anuncio.COLUMN_NAME_FOTOBIG
+			+ TEXT_TYPE + COMMA_SEP + Anuncio.COLUMN_NAME_FOTOSMALL
+			+ TEXT_TYPE + COMMA_SEP + Anuncio.COLUMN_NAME_DURACION
+			+ INT_TYPE + " ); " +
+			"";
 
 	private static final String SQL_DELETE_RESTAURANTS = "DROP TABLE IF EXISTS "
 			+ Restaurant.TABLE_NAME;
@@ -62,6 +74,12 @@ public class NuevaeraDbHelper extends SQLiteOpenHelper {
 	private static final String SQL_DELETE_CATEGORIES = "DROP TABLE IF EXISTS "
 			+ Category.TABLE_NAME;
 
+	private static final String SQL_DELETE_ELEMENTS = "DROP TABLE IF EXISTS "
+			+ Element.TABLE_NAME;
+	
+	private static final String SQL_DELETE_ADDS = "DROP TABLE IF EXISTS "
+			+ Anuncio.TABLE_NAME;
+	
 	public NuevaeraDbHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
@@ -70,6 +88,7 @@ public class NuevaeraDbHelper extends SQLiteOpenHelper {
 		db.execSQL(SQL_CREATE_RESTAURANTS);
 		db.execSQL(SQL_CREATE_CATEGORIES);
 		db.execSQL(SQL_CREATE_ELEMENTS);
+		db.execSQL(SQL_CREATE_ANUNCIOS);
 		Log.v("db", "NuevaEra database was created");
 	}
 	@Override
@@ -79,6 +98,10 @@ public class NuevaeraDbHelper extends SQLiteOpenHelper {
 		// to simply to discard the data and start over
 		db.execSQL(SQL_DELETE_RESTAURANTS);
 		db.execSQL(SQL_DELETE_CATEGORIES);
+		db.execSQL(SQL_DELETE_ELEMENTS);
+		db.execSQL(SQL_DELETE_ADDS);
+		
+		
 		Log.v("db", "NuevaEra database wass removed");
 		onCreate(db);
 	}

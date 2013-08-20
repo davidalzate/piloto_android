@@ -19,4 +19,6 @@
     <string name="title_activity_info_element">InfoElement</string>
 	<string name="username">Usuario</string>
 	<string name="password">Clave</string>
+	<string name="menu_button">Menú</string>
+	<string name="siguiente">siguiente</string>
 </resources>

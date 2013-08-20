@@ -16,7 +16,7 @@
         android:layout_width="fill_parent"
         android:layout_height="200dp"
         android:layout_gravity="fill_vertical"
-        android:layout_weight="1"
+        android:layout_weight="1.05"
         android:contentDescription="@string/category_name"
         android:scaleType="centerCrop"
         android:src="@drawable/category_banner" />
@@ -29,7 +29,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
-        android:background="#000000"
+        android:background="#99000000"
         android:gravity="right"
         android:lines="1"
         android:maxLines="1"

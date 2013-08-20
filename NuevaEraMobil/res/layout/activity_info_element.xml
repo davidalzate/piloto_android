@@ -1,10 +1,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="#F8F8F8"
     android:orientation="vertical" >
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/menu_buttons" >
+
+        <ImageButton
+            android:id="@+id/imageButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/backbtn"
+            android:contentDescription="@string/menu_button"
+            android:src="@drawable/backbtn" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp"
+            android:typeface="sans" />
+
+    </LinearLayout>
+
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/bannerView1"
         android:layout_width="fill_parent"
         android:layout_height="142dp"
         android:contentDescription="@string/element_name"
@@ -24,13 +50,13 @@
     <ImageView
         android:id="@+id/imageElement"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_margin="40dp"
+        android:layout_height="450dp"
+        android:layout_margin="10dp"
         android:adjustViewBounds="true"
         android:baselineAlignBottom="true"
         android:contentDescription="@string/title_activity_elements"
         android:cropToPadding="true"
-        android:scaleType="fitStart"
+        android:scaleType="fitCenter"
         android:src="@drawable/element_image" />
 
     <TextView

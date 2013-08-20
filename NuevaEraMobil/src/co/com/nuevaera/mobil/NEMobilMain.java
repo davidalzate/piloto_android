@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 
+import co.com.nuevaera.mobil.model.AnuncioDto;
 import co.com.nuevaera.mobil.model.CategoriaDto;
 import co.com.nuevaera.mobil.model.ElementoDto;
 import co.com.nuevaera.mobil.model.RestauranteDto;
@@ -45,11 +46,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -152,6 +155,8 @@ public class NEMobilMain extends Activity {
 		service = new com.google.api.services.tasks.Tasks.Builder(transport,
 				jsonFactory, credential).setApplicationName("nuevaeramedellin")
 				.build();
+		
+		
 
 	}
 
@@ -194,6 +199,17 @@ public class NEMobilMain extends Activity {
 		if (checkGooglePlayServicesAvailable()) {
 			haveGooglePlayServices();
 		}
+		ImageView logoNE = (ImageView)findViewById(R.id.imageView);
+		logoNE.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(
+						NEMobilMain.this,
+						RestaurantActivity.class);
+				startActivity(intent);
+			}
+		});
 	}
 
 	@Override
@@ -541,6 +557,11 @@ public class NEMobilMain extends Activity {
 
 		// display the response from the request above
 		protected void onPostExecute(String result) {
+
+			AddSyncRequest addSyncRequest = new AddSyncRequest();
+			addSyncRequest
+					.execute("http://nuevaeramedellin.appspot.com/nuevaera/adresource");
+			
 			Log.v(LOG_TAG, result);
 
 			ArrayList<ElementoDto> elements = NuevaEraJSonParser
@@ -557,12 +578,67 @@ public class NEMobilMain extends Activity {
 		}
 	}
 
+	private class AddSyncRequest extends AsyncTask<String, Void, String> {
+
+		private HttpResponse response;
+		private String content = null;
+
+		protected String doInBackground(String... urls) {
+			String ret = "";
+			try {
+
+				HttpGet httpGet = new HttpGet(urls[0]);
+				response = httpclient.execute(httpGet);
+				StatusLine statusLine = response.getStatusLine();
+				Log.v(LOG_TAG, statusLine.getReasonPhrase());
+				for (Cookie cookie : httpclient.getCookieStore().getCookies()) {
+					Log.v(LOG_TAG, cookie.getName());
+				}
+				if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					response.getEntity().writeTo(out);
+					out.close();
+					ret = out.toString();
+				}
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+				cancel(true);
+			} catch (IOException e) {
+				e.printStackTrace();
+				cancel(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				cancel(true);
+			}
+			return ret;
+		}
+
+		// display the response from the request above
+		protected void onPostExecute(String result) {
+			Log.v(LOG_TAG, result);
+
+			ArrayList<AnuncioDto> adds = NuevaEraJSonParser
+					.getAddsFromJson(result);
+
+			NuevaEraDatabaseHandler databaseHandler = new NuevaEraDatabaseHandler(
+					getBaseContext());
+			databaseHandler.addAnunciosList(adds);
+
+			Intent intent = new Intent(NEMobilMain.this,
+					RestaurantActivity.class);
+
+			startActivity(intent);
+		}
+	}
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		Log.v(LOG_TAG, "DSTR");
 	}
 
+
+	
 	private Dialog createDialog() {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);

@@ -6,6 +6,7 @@ import co.com.nuevaera.mobil.model.ElementoDto;
 import co.com.nuevaera.mobil.util.ImageLoader;
 import android.content.Context;
 import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,9 +45,12 @@ public class ElementArrayAdapter extends ArrayAdapter<ElementoDto> {
 		
 		imageLoader.DisplayImage(values.get(position).getFotoSmall(), stub_id, imageView);
 		ElementoDto elementoDto = values.get(position);
-		String summary = "<html><body><br>"+elementoDto.getNombre()+"<b><h1><br>"+elementoDto.getDescripcionCorta()+"</br></h1>"+elementoDto.getPrecio()+"</p></body></html>";
-		categoryView.setText(Html.fromHtml(summary));
+		String summary = "<div><h1><H1>"+elementoDto.getNombre()+"</h1></div><div><font size='32'>"+elementoDto.getDescripcionCorta()+"</font></div><div><H1>"+elementoDto.getPrecio()+"</H1></div>";
+
+		//Spanned strHtml= Html.fromHtml(summary);
 		
+		categoryView.setText(Html.fromHtml(summary));
+		//<div>"+elementoDto.getDescripcionCorta()+"</div><div>"+elementoDto.getPrecio()+"</div>
 
 		return rowView;
 	}

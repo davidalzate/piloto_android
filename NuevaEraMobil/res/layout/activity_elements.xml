@@ -3,10 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ListViewActivity"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/menu_buttons" >
+
+        <ImageButton
+            android:id="@+id/imageButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/backbtn"
+            android:contentDescription="@string/menu_button"
+            android:src="@drawable/backbtn" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="fill_vertical"
+            android:gravity="center"
+            android:text="TextView"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp"
+            android:typeface="sans" />
+
+    </LinearLayout>
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/bannerView1"
         android:layout_width="fill_parent"
         android:layout_height="142dp"
         android:contentDescription="@string/element_name"

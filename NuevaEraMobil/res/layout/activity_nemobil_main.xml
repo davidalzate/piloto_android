@@ -18,10 +18,19 @@
 
     </LinearLayout>
 
-    <ListView 
+    <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="880dp" ></ListView>
+        android:layout_height="0dp" >
+</ListView>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:contentDescription="Logo NE"
+        android:src="@drawable/logone" />
 
 </LinearLayout>
 

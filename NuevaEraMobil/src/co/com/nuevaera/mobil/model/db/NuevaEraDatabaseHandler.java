@@ -3,9 +3,11 @@ package co.com.nuevaera.mobil.model.db;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import co.com.nuevaera.mobil.model.AnuncioDto;
 import co.com.nuevaera.mobil.model.CategoriaDto;
 import co.com.nuevaera.mobil.model.ElementoDto;
 import co.com.nuevaera.mobil.model.RestauranteDto;
+import co.com.nuevaera.mobil.model.db.RestaurantContract.Anuncio;
 import co.com.nuevaera.mobil.model.db.RestaurantContract.Category;
 import co.com.nuevaera.mobil.model.db.RestaurantContract.Element;
 import co.com.nuevaera.mobil.model.db.RestaurantContract.Restaurant;
@@ -117,6 +119,33 @@ public class NuevaEraDatabaseHandler {
 		}
 	}
 	
+	public void addAnuncio(AnuncioDto anuncio){
+		try {
+			/// Create a new map of values, where column names are the keys
+			ContentValues values = new ContentValues();
+			values.put(Anuncio.COLUMN_NAME_ANUNCIO_ID, anuncio.getIdAnuncio());
+			values.put(Anuncio.COLUMN_NAME_EMPRESA_ID, anuncio.getIdEmpresa());
+			values.put(Anuncio.COLUMN_NAME_FOTOBIG, anuncio.getFotoBig());
+			values.put(Anuncio.COLUMN_NAME_FOTOSMALL, anuncio.getFotoSmall());
+			values.put(Anuncio.COLUMN_NAME_DURACION, anuncio.getDuracion());
+
+			// Insert the new row, returning the primary key value of the new row
+			SQLiteDatabase db = mDbHelper.getWritableDatabase();
+			long newRowId;
+			newRowId = db.insert(
+					Anuncio.TABLE_NAME,
+					null,
+			         values);
+			Log.v("db", "anuncioId===="+newRowId+"----");
+			db.close();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Log.v("db", "Ocurrio un error agregando el elemento " + e.getMessage());
+		}
+	}	
+	
 	public void addRestaurantList(ArrayList<RestauranteDto> restaurants){
 		for (RestauranteDto restaurant : restaurants) {
 			addRestaurant(restaurant);
@@ -135,6 +164,13 @@ public class NuevaEraDatabaseHandler {
 			addElement(elemento);
 		}
 	}
+	
+	public void addAnunciosList(ArrayList<AnuncioDto> adds){
+		for (AnuncioDto anuncio : adds) {
+			addAnuncio(anuncio);
+		}
+	}
+	
 	
 	public ArrayList<CategoriaDto> getCategories(){
 		ArrayList<CategoriaDto> categoriasList = new ArrayList<CategoriaDto>();
@@ -232,12 +268,54 @@ public class NuevaEraDatabaseHandler {
 		return elementList;
 	}
 	
+	public ArrayList<AnuncioDto> getAdds(){
+		ArrayList<AnuncioDto> addsList = new ArrayList<AnuncioDto>();
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+		// Define a projection that specifies which columns from the database
+		// you will actually use after this query.
+		String[] projection = {
+				Anuncio._ID,
+				Anuncio.COLUMN_NAME_ANUNCIO_ID,
+				Anuncio.COLUMN_NAME_EMPRESA_ID,
+				Anuncio.COLUMN_NAME_FOTOBIG,
+				Anuncio.COLUMN_NAME_FOTOSMALL,
+				Anuncio.COLUMN_NAME_DURACION
+		    };
+		
+
+
+		Cursor cursor = db.query(
+				Anuncio.TABLE_NAME,  // The table to query
+		    projection,                               // The columns to return
+		    null,                                // The columns for the WHERE clause
+		    null,                            // The values for the WHERE clause
+		    null,                                     // don't group the rows
+		    null,                                     // don't filter by row groups
+		    null                                 // The sort order
+		    );		
+		
+		if (cursor.moveToFirst()) {
+	        do {
+	            AnuncioDto anuncio = new AnuncioDto();
+	            anuncio.setIdAnuncio(cursor.getLong(1));
+	            anuncio.setIdEmpresa(cursor.getInt(2));
+	            anuncio.setFotoBig(cursor.getString(3));
+	            anuncio.setFotoSmall(cursor.getString(4));
+	            anuncio.setDuracion(cursor.getInt(5));
+	            addsList.add(anuncio);
+	        } while (cursor.moveToNext());
+	    }
+		
+		cursor.close();
+		db.close();
+		
+		return addsList;
+	}
+	
+	
 	public int deleteRestaurant(){
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
-		// Define 'where' part of query.
-		String selection = Restaurant.COLUMN_NAME_RESTAURANT_ID + " > ?";
-		// Specify arguments in placeholder order.
-		String[] selectionArgs = { "1" };
 		// Issue SQL statement.
 		int count = db.delete(Restaurant.TABLE_NAME, null, null);
 		db.close();
@@ -246,10 +324,6 @@ public class NuevaEraDatabaseHandler {
 	
 	public int deleteCategories(){
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
-		// Define 'where' part of query.
-		String selection = Category.COLUMN_NAME_RESTAURANT_ID + " > ?";
-		// Specify arguments in placeholder order.
-		String[] selectionArgs = { "1" };
 		// Issue SQL statement.
 		int count = db.delete(Category.TABLE_NAME, null, null);
 		db.close();
@@ -259,11 +333,20 @@ public class NuevaEraDatabaseHandler {
 	public int deleteElements(){
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
 		// Define 'where' part of query.
-		String selection = Element.COLUMN_NAME_CATEGORY_ID + " > ?";
 		// Specify arguments in placeholder order.
-		String[] selectionArgs = { "1" };
 		// Issue SQL statement.
 		int count = db.delete(Element.TABLE_NAME, null, null);
+		db.close();
+		return count;
+	}
+	
+	
+	public int deleteAdds(){
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		// Define 'where' part of query.
+		// Specify arguments in placeholder order.
+		// Issue SQL statement.
+		int count = db.delete(Anuncio.TABLE_NAME, null, null);
 		db.close();
 		return count;
 	}
@@ -272,6 +355,7 @@ public class NuevaEraDatabaseHandler {
 		deleteRestaurant();
 		deleteCategories();
 		deleteElements();
+		deleteAdds();
 	}
 	
 	public void createDb(){
